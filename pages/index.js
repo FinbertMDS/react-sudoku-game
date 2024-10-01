@@ -11,6 +11,7 @@ import css from 'styled-jsx/css';
 
 import RangeStyle from '../input-range-style';
 import LoupeIcon from '../svg/loupe.svg';
+import MemoIcon from '../svg/memo.svg';
 import ReloadIcon from '../svg/reload.svg';
 import RemoveIcon from '../svg/remove.svg';
 import ReturnIcon from '../svg/return.svg';
@@ -85,6 +86,10 @@ const ActionsStyle = css`
 }
 .redo :global(svg) {
     transform: scaleX(-1);
+}
+.memo :global(svg) {
+    width: 32px;
+    height: 32px;
 }
 `;
 
@@ -379,20 +384,20 @@ CirclularProgress.propTypes = {
   percent: PropTypes.number.isRequired,
 };
 
-function getClickHandler(onClick, onDoubleClick, delay = 250) {
-  let timeoutID = null;
-  return (event) => {
-    if (!timeoutID) {
-      timeoutID = setTimeout(() => {
-        onClick(event);
-        timeoutID = null;
-      }, delay);
-    } else {
-      timeoutID = clearTimeout(timeoutID);
-      onDoubleClick(event);
-    }
-  };
-}
+// function getClickHandler(onClick, onDoubleClick, delay = 250) {
+//   let timeoutID = null;
+//   return (event) => {
+//     if (!timeoutID) {
+//       timeoutID = setTimeout(() => {
+//         onClick(event);
+//         timeoutID = null;
+//       }, delay);
+//     } else {
+//       timeoutID = clearTimeout(timeoutID);
+//       onDoubleClick(event);
+//     }
+//   };
+// }
 
 /**
  * make size 9 array of 0s
@@ -509,7 +514,7 @@ export default class Index extends Component {
     // initialize the board with choice counts
     const board = makeBoard({ puzzle });
     this.setState({
-      board, history: List.of(board), historyOffSet: 0, solution,
+      board, history: List.of(board), historyOffSet: 0, solution, finalCount,
     });
   }
 
@@ -577,6 +582,13 @@ export default class Index extends Component {
     this.fillNumber(false);
   }
 
+  memoSelected = () => {
+    const selectedCell = this.getSelectedCell();
+    if (!selectedCell) return;
+    const { isMemo } = this.state;
+    this.setState({ isMemo: !isMemo });
+  }
+
   fillSelectedWithSolution = () => {
     const { board, solution } = this.state;
     const selectedCell = this.getSelectedCell();
@@ -632,6 +644,15 @@ export default class Index extends Component {
     return rowConflict || columnConflict || squareConflict;
   }
 
+  handleClickNumber(number) {
+    const { isMemo } = this.state;
+    if (!isMemo) {
+      this.fillNumber(number);
+    } else {
+      this.addNumberAsNote(number);
+    }
+  }
+
   renderCell(cell, x, y) {
     const { board } = this.state;
     const selected = this.getSelectedCell();
@@ -664,16 +685,11 @@ export default class Index extends Component {
       <div className="control">
         {range(9).map((i) => {
           const number = i + 1;
-          // handles binding single click and double click callbacks
-          const clickHandle = getClickHandler(
-            () => { this.fillNumber(number); },
-            () => { this.addNumberAsNote(number); },
-          );
           return (
             <NumberControl
               key={number}
               number={number}
-              onClick={!prefilled ? clickHandle : undefined}
+              onClick={!prefilled ? () => { this.handleClickNumber(number); } : undefined}
               completionPercentage={this.getNumberValueCount(number) / 9}
             />);
         })}
@@ -683,7 +699,7 @@ export default class Index extends Component {
   }
 
   renderActions() {
-    const { history } = this.state;
+    const { history, isMemo } = this.state;
     const selectedCell = this.getSelectedCell();
     const prefilled = selectedCell && selectedCell.get('prefilled');
     return (
@@ -696,6 +712,9 @@ export default class Index extends Component {
         </div>
         <div className="action" onClick={!prefilled ? this.eraseSelected : null}>
           <RemoveIcon />Erase
+        </div>
+        <div className="action memo" onClick={!prefilled ? this.memoSelected : null}>
+          <MemoIcon />Memo({isMemo ? 'ON' : 'OFF'})
         </div>
         <div
           className="action"
@@ -789,6 +808,17 @@ export default class Index extends Component {
     );
   }
 
+  renderGameInfo() {
+    const { finalCount } = this.state;
+    return (
+      <div className="header">
+        <div className="new-game">
+          <div>{finalCount} cells prefilled</div>
+        </div>
+      </div>
+    );
+  }
+
   render() {
     const { board } = this.state;
     return (
@@ -798,14 +828,15 @@ export default class Index extends Component {
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="description" content={Description} />
           <link href="https://fonts.googleapis.com/css?family=Special+Elite" rel="stylesheet" />
-          <meta property="og:url" content="https://sudoku.sitianliu.com/" />
+          {/* <meta property="og:url" content="https://sudoku.finbertmds.com/" /> */}
           <meta property="og:title" content="Sudoku Evolved" />
           <meta property="og:type" content="website" />
           <meta property="og:description" content={Description} />
-          <meta property="og:image" content="https://sudoku.sitianliu.com/static/og-image.png" />
+          {/* <meta property="og:image" content="https://sudoku.finbertmds.com/static/og-image.png" /> */}
         </NextHead>
         {!board && this.renderGenerationUI()}
         {board && this.renderHeader()}
+        {board && this.renderGameInfo()}
         {board && this.renderPuzzle()}
         {board && this.renderControls()}
         { /* language=CSS */}
