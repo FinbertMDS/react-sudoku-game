@@ -1,6 +1,6 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import css from 'styled-jsx/css';
-import {backGroundBlue} from "./colors";
+import { backGroundBlue } from './colors';
 
 // eslint-disable-next-line no-lone-blocks
 { /* language=CSS */ }

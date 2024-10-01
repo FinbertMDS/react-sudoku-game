@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React, { Component } from 'react';
-import { Set, List, fromJS } from 'immutable';
-import PropTypes from 'prop-types';
-import NextHead from 'next/head';
 import Color from 'color';
+import { List, Set, fromJS } from 'immutable';
+import NextHead from 'next/head';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import InputRange from 'react-input-range';
 
 // eslint-disable-next-line import/no-extraneous-dependencies
@@ -11,13 +11,13 @@ import css from 'styled-jsx/css';
 
 import RangeStyle from '../input-range-style';
 import LoupeIcon from '../svg/loupe.svg';
-import RemoveIcon from '../svg/remove.svg';
 import ReloadIcon from '../svg/reload.svg';
+import RemoveIcon from '../svg/remove.svg';
 import ReturnIcon from '../svg/return.svg';
 
-import { makePuzzle, pluck, isPeer as areCoordinatePeers, range } from '../sudoku';
 import { backGroundBlue } from '../colors';
 import Tip from '../components/tool-tip';
+import { isPeer as areCoordinatePeers, makePuzzle, pluck, range } from '../sudoku';
 
 
 const Description = 'Discover the next evolution of Sudoku with amazing graphics, animations, and user-friendly features. Enjoy a Sudoku experience like you never have before with customizable game generation, cell highlighting, intuitive controls and more!';
@@ -223,7 +223,7 @@ class GenerationUI extends Component {
           onChange={value => this.setState({ value })}
         />
         <div className="button" onClick={this.generateGame}>Play Sudoku</div>
-        { /* language=CSS */ }
+        { /* language=CSS */}
         <style jsx>{`
             .copy {
                 text-align: center;
@@ -315,11 +315,11 @@ const Cell = (props) => {
       {
         notes ?
           range(9).map(i =>
-            (
-              <div key={i} className="note-number">
-                {notes.has(i + 1) && (i + 1)}
-              </div>
-            )) :
+          (
+            <div key={i} className="note-number">
+              {notes.has(i + 1) && (i + 1)}
+            </div>
+          )) :
           value && value
       }
       {/* language=CSS */}
@@ -370,7 +370,7 @@ const CirclularProgress = ({ percent }) => (
       strokeDasharray={`${percent * 100}, 100`}
       d={CircularPathD}
     />
-    { /* language=CSS */ }
+    { /* language=CSS */}
     <style jsx>{CirculuarProgressStyle}</style>
   </svg>
 );
@@ -700,7 +700,7 @@ export default class Index extends Component {
         <div
           className="action"
           onClick={!prefilled ?
-          this.fillSelectedWithSolution : null}
+            this.fillSelectedWithSolution : null}
         >
           <LoupeIcon />Hint
         </div>
@@ -731,7 +731,7 @@ export default class Index extends Component {
       <div className="controls">
         {this.renderNumberControl()}
         {this.renderActions()}
-        { /* language=CSS */ }
+        { /* language=CSS */}
         <style jsx>{`
             .controls {
                 margin-top: .3em;
@@ -761,7 +761,7 @@ export default class Index extends Component {
           <div>New Game</div>
         </div>
         <Tip />
-        { /* language=CSS */ }
+        { /* language=CSS */}
         <style jsx>{`
             .header {
                 display: flex;
@@ -808,10 +808,7 @@ export default class Index extends Component {
         {board && this.renderHeader()}
         {board && this.renderPuzzle()}
         {board && this.renderControls()}
-        <div className="rooter">
-          Made with <span>❤️</span>️ By <a href="https://www.sitianliu.com/">Sitian Liu</a> | <a href="https://medium.com/@sitianliu_57680/building-a-sudoku-game-in-react-ca663915712">Blog Post</a>
-        </div>
-        { /* language=CSS */ }
+        { /* language=CSS */}
         <style jsx>{`
             :global(body), .body {
                 font-family: 'Special Elite', cursive;
@@ -867,6 +864,7 @@ export default class Index extends Component {
             }
         `}
         </style>
+        {/* eslint-disable react/no-unknown-property */}
         <style jsx global>{RangeStyle}</style>
       </div>
     );
